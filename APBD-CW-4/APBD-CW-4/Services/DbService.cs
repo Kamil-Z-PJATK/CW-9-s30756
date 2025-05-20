@@ -11,16 +11,18 @@ public class DbService(AppDbContext data):IDbService
 {
     public async Task<PerscriptionGetDTO> AddPerscriptionAsync(PerscriptionCreateDTO perscription)
     {
-        var ifPatient=data.Patients.FirstOrDefaultAsync(e=>e.IdPatient==perscription.Patient.IdPatient);
+       
         
         
         var transaction = await data.Database.BeginTransactionAsync();
         try
         {
-            if (ifPatient == null)
+            var ifPatient=data.Patients.FirstOrDefaultAsync(e=>e.IdPatient==perscription.Patient.IdPatient);
+            if (await ifPatient == null)
             {
                 data.Patients.Add(new Patient
                 {
+                    
                     FirstName = perscription.Patient.FirstName,
                     LastName = perscription.Patient.LastName,
                     BirthDate = perscription.Patient.BirthDate,
@@ -37,7 +39,7 @@ public class DbService(AppDbContext data):IDbService
                 }
             }
 
-            if (perscription.Date <= perscription.DueDate)
+            if (perscription.Date > perscription.DueDate)
             {
                 throw new DataException("The date is earlier than the due date");
             }
@@ -47,7 +49,7 @@ public class DbService(AppDbContext data):IDbService
                     Date = perscription.Date,
                     DueDate = perscription.DueDate,
                     IdPatient = perscription.Patient.IdPatient,
-                    IdDoctor = perscription.Doctor.IdDoctor
+                    IdDoctor = perscription.IdDoctor
                 };
             data.Prescriptions.Add(per );
             await data.SaveChangesAsync();

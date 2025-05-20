@@ -9,7 +9,7 @@ public class PerscriptionCreateDTO
     public DateOnly Date { get; set; }
     public DateOnly DueDate { get; set; }
     public Patient Patient { get; set; }
-    public Doctor Doctor { get; set; }
+    public int IdDoctor { get; set; }
     [MaxLength(10)]
     public ICollection<Medicament> Medicaments { get; set; }
 }
