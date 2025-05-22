@@ -31,6 +31,11 @@ public class DbService(AppDbContext data):IDbService
             }
             await data.SaveChangesAsync();
 
+            if (perscription.Medicaments.Count>10)
+            {
+                throw new WrongMedicamentsSizeException("Medicaments count is greather than 10");
+            }
+            
             foreach (var med in perscription.Medicaments )
             {
                 if (data.Medicaments.FirstOrDefaultAsync(e => e.IdMedicament == med.IdMedicament)==null)
@@ -60,8 +65,8 @@ public class DbService(AppDbContext data):IDbService
                 {
                     IdMedicament = med.IdMedicament,
                     IdPrescription = per.IdPrescription,
-                    Dose= 100,
-                    Details = "Tyle ile maszyna dała"
+                    Dose= med.Dose,
+                    Details = med.Description
                     
                 });
             }
@@ -73,7 +78,13 @@ public class DbService(AppDbContext data):IDbService
                 IdPrescription = per.IdPrescription,
                 Date = per.Date,
                 DueDate = per.DueDate,
-                IdPatient = per.IdPatient,
+                Patient = new Patient
+                {
+                    IdPatient = per.IdPatient,
+                    FirstName = perscription.Patient.FirstName,
+                    LastName = perscription.Patient.LastName,
+                    BirthDate = perscription.Patient.BirthDate,
+                } ,
                 IdDoctor = per.IdDoctor,
                 Meds = perscription.Medicaments
             };

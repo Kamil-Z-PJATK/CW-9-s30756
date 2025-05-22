@@ -11,5 +11,5 @@ public class PerscriptionCreateDTO
     public Patient Patient { get; set; }
     public int IdDoctor { get; set; }
     [MaxLength(10)]
-    public ICollection<Medicament> Medicaments { get; set; }
+    public ICollection<MedicamentGetDTO> Medicaments { get; set; }
 }
